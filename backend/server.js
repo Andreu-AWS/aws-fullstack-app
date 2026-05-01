@@ -17,7 +17,10 @@ app.use(express.json());  /* bodyParser.json() is deprecated */
 app.use(express.urlencoded({ extended: true }));   /* bodyParser.urlencoded() is deprecated */
 
 const db = require("./app/models");
-db.sequelize.sync();
+db.sequelize.sync().catch(err => {
+  console.error("Database connection failed:", err.message);
+  process.exit(1);
+});
 // // drop the table if it already exists
 // db.sequelize.sync({ force: true }).then(() => {
 //   console.log("Drop and re-sync db.");
