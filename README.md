@@ -2,6 +2,8 @@
 
 Full-stack application deployed on AWS using ECS Fargate, RDS PostgreSQL, S3 and CloudFront.
 
+![App running on AWS](screenshot.png)
+
 ## Architecture
 
 ```
