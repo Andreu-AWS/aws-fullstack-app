@@ -51,6 +51,7 @@ jobs:
           echo "ecr_url=$(terraform output -raw ecr_repository_url)" >> $GITHUB_OUTPUT
           echo "s3_bucket=$(terraform output -raw s3_bucket_name)" >> $GITHUB_OUTPUT
           echo "cloudfront_id=$(terraform output -raw cloudfront_distribution_id)" >> $GITHUB_OUTPUT
+          echo "cloudfront_domain=$(terraform output -raw cloudfront_domain)" >> $GITHUB_OUTPUT
           echo "cluster=$(terraform output -raw ecs_cluster_name)" >> $GITHUB_OUTPUT
           echo "service=$(terraform output -raw ecs_service_name)" >> $GITHUB_OUTPUT
 
@@ -74,7 +75,9 @@ jobs:
 
       - name: Upload frontend to S3
         run: |
-          aws s3 cp frontend/index.html s3://${{ steps.tf.outputs.s3_bucket }}/index.html
+          CLOUDFRONT_URL="https://${{ steps.tf.outputs.cloudfront_domain }}"
+          sed "s|http://localhost:8080|${CLOUDFRONT_URL}|g" frontend/index.html > /tmp/index_prod.html
+          aws s3 cp /tmp/index_prod.html s3://${{ steps.tf.outputs.s3_bucket }}/index.html
 
       - name: Invalidate CloudFront cache
         run: |

@@ -37,3 +37,8 @@ output "cloudfront_distribution_id" {
   description = "ID de la distribución CloudFront"
   value       = aws_cloudfront_distribution.frontend.id
 }
+
+output "cloudfront_domain" {
+  description = "Dominio de CloudFront (sin https://)"
+  value       = aws_cloudfront_distribution.frontend.domain_name
+}
