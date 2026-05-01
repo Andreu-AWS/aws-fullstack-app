@@ -1,3 +1,9 @@
+# CloudWatch Log Group
+resource "aws_cloudwatch_log_group" "backend" {
+  name              = "/ecs/${var.project_name}"
+  retention_in_days = 7
+}
+
 # ECS Cluster
 resource "aws_ecs_cluster" "main" {
   name = "${var.project_name}-cluster"
@@ -69,6 +75,14 @@ resource "aws_ecs_task_definition" "backend" {
     secrets = [
       { name = "DB_PASSWORD", valueFrom = aws_secretsmanager_secret.db_password.arn }
     ]
+    logConfiguration = {
+      logDriver = "awslogs"
+      options = {
+        "awslogs-group"         = aws_cloudwatch_log_group.backend.name
+        "awslogs-region"        = var.aws_region
+        "awslogs-stream-prefix" = "backend"
+      }
+    }
   }])
 }
 
