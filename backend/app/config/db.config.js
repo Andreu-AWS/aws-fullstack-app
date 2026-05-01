@@ -1,9 +1,17 @@
+const isProduction = !!process.env.DB_HOST;
+
 module.exports = {
   HOST: process.env.DB_HOST || "localhost",
   USER: process.env.DB_USER || "postgres",
   PASSWORD: process.env.DB_PASSWORD || "123",
   DB: process.env.DB_NAME || "testdb",
   dialect: "postgres",
+  dialectOptions: isProduction ? {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    }
+  } : {},
   pool: {
     max: 5,
     min: 0,
